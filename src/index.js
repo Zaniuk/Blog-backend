@@ -1,6 +1,22 @@
 const express = require('express')
 // const { get } = require('express/lib/response')
+require('dotenv').config()
+const postSchema = require('./schemas/postSchema')
+const dbPass = process.env.DB_PASS
+/* */
+
 const cors = require('cors')
+const mongoose = require('mongoose')
+/* MongoDB Connection */
+const connectionString = `mongodb+srv://sysAdmin5990:${dbPass}@blogcluster.v6xrb.mongodb.net/Blog?retryWrites=true&w=majority`
+const connectDB = () => {
+  mongoose.connect(connectionString)
+    .then(() => {
+      console.log('Connected')
+    })
+    .catch(err => console.log(err))
+}
+const Post = mongoose.model('Post', postSchema)
 let posts = [{
   userId: 1,
   id: 1,
@@ -152,8 +168,14 @@ app.get('/', (_req, res) => {
 
 /* GET all posts */
 
-app.get('/api/posts/', (_req, res) => {
-  res.send(posts)
+app.get('/api/posts/', (_req, response) => {
+  connectDB()
+  Post.find({})
+    .then(res => {
+      response.json(res)
+      mongoose.connection.close()
+    })
+    .catch(err => console.log(err))
 })
 
 /* GET all post for a given userId */
@@ -210,5 +232,5 @@ app.get('/api/posts/users/:id', (req, res) => {
 })
 const PORT = process.env.PORT || 80
 app.listen(PORT, () => {
-  console.log('Server is Listening on' + PORT)
+  console.log('Server is Listening on ' + PORT)
 })
