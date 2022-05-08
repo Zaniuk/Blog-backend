@@ -1,0 +1,7 @@
+POST http://localhost/api/posts
+Content-Type: application/json;
+
+{   
+    "title": "titulo",
+    "content": "contenido"
+}

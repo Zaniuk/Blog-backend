@@ -141,14 +141,21 @@ let posts = [{
 ]
 
 const app = express()
-app.get('/', (req, res) => {
+
+app.use(express.json())
+
+app.get('/', (_req, res) => {
   res.send('Welcome')
 })
+
 /* GET all posts */
-app.get('/api/posts/', (req, res) => {
+
+app.get('/api/posts/', (_req, res) => {
   res.send(posts)
 })
+
 /* GET all post for a given userId */
+
 app.get('/api/posts/:id', (req, res) => {
   const id = Number(req.params.id)
   const postRes = posts.find(post => post.id === id)
@@ -159,15 +166,35 @@ app.get('/api/posts/:id', (req, res) => {
     res.status(404).end()
   }
 })
-app.post('/api/posts', (req, res) => {
 
+/* CREATE a new post */
+
+app.post('/api/posts', (req, res) => {
+  const post = req.body
+  if (!post || !post.content) {
+    res.status(400).json({ error: 'Error creating post' })
+  }
+  const idList = posts.map(post => post.id)
+  const maxId = Math.max(...idList)
+  const newPost = {
+    userId: 4,
+    id: maxId + 1,
+    title: post.title,
+    content: post.content
+  }
+  console.log(req.body)
+  posts = [...posts, newPost]
+  console.log(newPost)
+  res.json(newPost)
 })
+
 app.delete('/api/posts/:id', (req, res) => {
   const id = Number(req.params.id)
   // eslint-disable-next-line no-use-before-define
   posts = posts.filter(post => post.id !== id)
   res.status(204).end()
 })
+
 app.get('/api/posts/users/:id', (req, res) => {
   const id = Number(req.params.id)
   const userPosts = posts.filter(userPost => userPost.userId === id)
