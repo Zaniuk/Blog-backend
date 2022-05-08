@@ -1,5 +1,6 @@
 const express = require('express')
 // const { get } = require('express/lib/response')
+const cors = require('cors')
 let posts = [{
   userId: 1,
   id: 1,
@@ -143,6 +144,7 @@ let posts = [{
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 
 app.get('/', (_req, res) => {
   res.send('Welcome')
@@ -195,6 +197,8 @@ app.delete('/api/posts/:id', (req, res) => {
   res.status(204).end()
 })
 
+/* GET all posts for a given userId */
+
 app.get('/api/posts/users/:id', (req, res) => {
   const id = Number(req.params.id)
   const userPosts = posts.filter(userPost => userPost.userId === id)
@@ -204,7 +208,7 @@ app.get('/api/posts/users/:id', (req, res) => {
     res.status(404).end()
   }
 })
-
-app.listen(80, () => {
-  console.log('Server is Listening on 3000')
+const PORT = process.env.PORT || 80
+app.listen(PORT, () => {
+  console.log('Server is Listening on' + PORT)
 })
