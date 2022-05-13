@@ -16,4 +16,5 @@ const postSchema = new mongoose.Schema({
   date: Date,
   ceoTags: Array
 })
-module.exports = postSchema
+const Post = mongoose.model('Post', postSchema)
+module.exports = Post

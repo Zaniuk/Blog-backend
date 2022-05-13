@@ -1,8 +1,15 @@
+/* Required libraries */
 const express = require('express')
 // const { get } = require('express/lib/response')
 require('dotenv').config()
-const postSchema = require('./schemas/postSchema')
 const dbPass = process.env.DB_PASS
+//const path = require('path')
+const bodyParser = require('body-parser')
+
+const Post = require('./model/postSchema')
+const User = require('./model/user')
+const bcrypt = require('bcryptjs')
+const authRoute = require('./routes/auth')
 /* */
 
 const cors = require('cors')
@@ -16,16 +23,23 @@ mongoose.connect(connectionString)
   })
   .catch(err => console.log(err))
 
-const Post = mongoose.model('Post', postSchema)
+// const Post = mongoose.model('Post', postSchema)
 const app = express()
 
 app.use(express.json())
 app.use(cors())
+app.use(bodyParser.json())
+/* _Index */
 
 app.get('/', (_req, res) => {
   res.send('Welcome')
 })
+/* Login */
+//app.use('/register/', express.static(path.join(__dirname, 'public', 'register', 'register.html')))
 
+/* Register */
+
+app.use('/api/user', authRoute)
 /* GET all posts */
 
 app.get('/api/posts/', (_req, response) => {
