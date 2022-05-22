@@ -3,7 +3,6 @@ const express = require('express')
 // const { get } = require('express/lib/response')
 require('dotenv').config()
 const dbPass = process.env.DB_PASS
-//const path = require('path')
 const bodyParser = require('body-parser')
 
 const authRoute = require('./routes/auth')
